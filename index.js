@@ -39,18 +39,17 @@ client.on('message', async message => {
   } else if (message.content.startsWith(`${prefix}queue`)) {
     queueList(message, serverQueue)
   } else {
-    message.channel.send(
-      ``` \`\`\`markdown
-      Instrucciones  
-      =============  
-      - *${prefix}play <link a video de youtube>* Para escuchar una rola  
-      - *${prefix}skip para saltar a la siguiente  
-      - *${prefix}stop para detener la reproducción y limpiar la lista
-      - *${prefix}search para buscar en youtube
-      - *${prefix}queue para ver la lista de reproducción actual
-      \`\`\`
-      ```
-    )
+    message.channel.send(`
+\`\`\`markdown
+Instrucciones  
+=============  
+- ${prefix}search
+- ${prefix}play <link a video de youtube>
+- ${prefix}skip
+- ${prefix}stop
+- ${prefix}queue
+\`\`\`
+    `)
   }
 })
 
