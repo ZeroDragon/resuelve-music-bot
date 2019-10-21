@@ -85,7 +85,7 @@ async function execute (message, serverQueue) {
     try {
       var connection = await voiceChannel.join()
       queueContruct.connection = connection
-      play(message.guild, queueContruct.songs[0])
+      play(message, queueContruct.songs[0])
     } catch (err) {
       console.log(err)
       queue.delete(message.guild.id)
@@ -164,7 +164,8 @@ function stop (message, serverQueue) {
   serverQueue.connection.dispatcher.end()
 }
 
-function play (guild, song) {
+function play (message, song) {
+  const { guild } = message
   const serverQueue = queue.get(guild.id)
 
   if (!song) {
@@ -173,14 +174,22 @@ function play (guild, song) {
     return
   }
 
-  const dispatcher = serverQueue.connection.playStream(ytdl(song.url))
+  const stream = ytdl(song.url, {
+    filter: 'audioonly',
+    quality: 'highestaudio'
+  })
+  const dispatcher = serverQueue.connection.playStream(stream)
     .on('end', () => {
       // console.log('Music ended!')
       serverQueue.songs.shift()
-      play(guild, serverQueue.songs[0])
+      play(message, serverQueue.songs[0])
     })
     .on('error', error => {
       console.error(error)
+    })
+    .on('start', () => {
+      client.user.setPresence({ game: { name: song.title }, status: 'Playing' })
+      message.channel.send(`Ahora escuchamos ${song.title}`)
     })
   dispatcher.setVolumeLogarithmic(serverQueue.volume / 5)
 }
