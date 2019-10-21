@@ -6,7 +6,7 @@ const { prefix, token, googleKey } = require('./config.json')
 const client = new Discord.Client()
 const queue = new Map()
 
-const searchOpts = { maxResults: 9, key: googleKey }
+const searchOpts = { maxResults: 9, key: googleKey, type: 'video' }
 
 client.once('ready', () => {
   console.log('Ready!')
